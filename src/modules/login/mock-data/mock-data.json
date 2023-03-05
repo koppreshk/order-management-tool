@@ -1,0 +1,12 @@
+{
+    "regesteredUsers": [
+        {
+            "userName": "testuser",
+            "password": "password100"
+        },
+        {
+            "userName": "user@gmail.com",
+            "password": "password100"
+        }
+    ]
+}
