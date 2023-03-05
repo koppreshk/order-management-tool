@@ -1,8 +1,11 @@
+import { Button } from "@mui/material";
 import React from "react";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import { FlexBox } from "../../../common";
 import * as orders from "../mock-data/mock-data.json";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 const Table = styled.table`
     table {
@@ -92,14 +95,19 @@ const Pagination = React.memo((props: {
     const { data } = props;
     const totalPageCount = React.useMemo(() => Math.round(data.length / 10), [data.length]);
     const [searchParams, setSearchParams] = useSearchParams();
+    const pageValue = searchParams.get('pageNumber');
 
     React.useEffect(() => {
-        const pageValue = searchParams.get('pageNumber');
         if (!pageValue) {
             searchParams.set('pageNumber', '1')
             setSearchParams(searchParams)
         }
-    }, [searchParams, setSearchParams])
+    }, [searchParams, setSearchParams, pageValue])
+
+    React.useEffect(() => {
+        buttonContainerRef.current && buttonContainerRef.current.scrollTo({ left: Number(pageValue) * 30 })
+    });
+
     const pagesArray = React.useMemo(() => {
         const array = [];
         for (let i = 1; i <= totalPageCount; i++) {
@@ -113,11 +121,24 @@ const Pagination = React.memo((props: {
         setSearchParams(searchParams)
     }, [searchParams, setSearchParams]);
 
+    const buttonContainerRef = React.useRef<HTMLDivElement>(null);
+
+    const onLeftClick = () => buttonContainerRef.current!.scrollBy({ behavior: 'smooth', left: -50 });
+    const onRightClick = () => buttonContainerRef.current!.scrollBy({ behavior: 'smooth', left: 50 });
+
     return (
-        <FlexBox gap="10px" width="1000px" flexWrap="wrap">
-            {
-                pagesArray.map((pageNumber) => <button value={pageNumber} key={pageNumber} onClick={onPageClick}>{pageNumber}</button>)
-            }
+        <FlexBox width="500px" gap="10px" alignItems="center">
+            <ArrowBackIosIcon onClick={onLeftClick} />
+            <FlexBox ref={buttonContainerRef} width="450px" overflowX="hidden">
+                {
+                    pagesArray.map((pageNumber) => <Button
+                        sx={{ outline: Number(pageValue) === pageNumber ? '2px solid #0077D9' : '', outlineOffset: '-2px' }}
+                        value={pageNumber}
+                        key={pageNumber}
+                        onClick={onPageClick}>{pageNumber}</Button>)
+                }
+            </FlexBox>
+            <ArrowForwardIosIcon onClick={onRightClick} />
         </FlexBox>
     )
 })
