@@ -68,6 +68,7 @@ export const LoginPage = () => {
     return (
         <form onSubmit={onSubmitHandler} style={{ width: '100%', height: '100%' }}>
             <FlexBox width="100%" height="100%" flexDirection="column" gap="20px" justifyContent="center" alignItems="center">
+                <Typography variant="h4">Login</Typography>
                 <StyledTextField label="UserName/Email" variant="outlined" type="text" onChange={onUserNameChange} />
                 <StyledTextField label="Password" variant="outlined" type="password" onChange={onPassowrdChange} />
                 {error.length ? <Typography variant="body2" color="red">{error}</Typography> : null}

@@ -7,6 +7,10 @@
         {
             "userName": "user@gmail.com",
             "password": "password100"
+        },
+        {
+            "userName": "username",
+            "password": "pass"
         }
     ]
 }

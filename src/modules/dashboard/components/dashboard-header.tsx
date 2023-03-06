@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Button, TextField } from "@mui/material";
 import styled from "styled-components";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -11,9 +11,24 @@ const StyledTextField = styled(TextField)`
 export const DashboardHeader = React.memo(() => {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
+    const textValue = React.useMemo(() => searchParams.get('searchText'), [searchParams]);
+    const [searchValue, setSearchValue] = useState(textValue ?? '');
+
+    React.useEffect(() => {
+        if (textValue) {
+            setSearchValue(textValue);
+        }
+    }, [textValue])
 
     const onChangeHandler = React.useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchValue(ev.target.value);
+        if (!ev.target.value) {
+            searchParams.delete('searchText');
+            setSearchParams(searchParams);
+            return;
+        }
         searchParams.set('searchText', ev.target.value);
+        searchParams.set('pageNumber', "1");
         setSearchParams(searchParams)
     }, [searchParams, setSearchParams]);
 
@@ -23,7 +38,7 @@ export const DashboardHeader = React.memo(() => {
 
     return (
         <FlexBox justifyContent="space-evenly" alignItems="center" width="100%" height="100px">
-            <StyledTextField onChange={onChangeHandler} label="Filter" autoComplete="off" />
+            <StyledTextField onChange={onChangeHandler} value={searchValue} label="Filter" autoComplete="off" />
             <Button onClick={onClick}>Logout</Button>
         </FlexBox>
     );
